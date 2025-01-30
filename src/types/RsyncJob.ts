@@ -1,4 +1,3 @@
-// import { build } from 'rsync';
 import { RsyncJobConfigs } from './RsyncJobConfigs';
 
 export class RsyncJob {
@@ -11,10 +10,5 @@ export class RsyncJob {
   constructor(rsyncJobConfigs: RsyncJobConfigs) {
     this.id = Math.random();
     this.rsyncJobConfigs = rsyncJobConfigs;
-    // this.job = build({
-    //   source: rsyncJobConfigs.source,
-    //   destination: rsyncJobConfigs.destination,
-    //   flags: rsyncJobConfigs.flags,
-    // });
   }
 }
