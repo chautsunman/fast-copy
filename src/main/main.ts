@@ -9,7 +9,7 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -137,6 +137,17 @@ app
         rsyncHandler.runJob(rsyncJobConfigs);
       },
     );
+
+    ipcMain.handle('pick-directory', async () => {
+      const result = await dialog.showOpenDialog(mainWindow!, {
+        properties: ['openDirectory'],
+      });
+      if (result.canceled) {
+        return null;
+      } else {
+        return result.filePaths[0];
+      }
+    });
   })
   .then(() => {
     createWindow();

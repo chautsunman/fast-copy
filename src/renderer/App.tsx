@@ -8,6 +8,20 @@ function App() {
   const [source, setSource] = useState('');
   const [destination, setDestination] = useState('');
 
+  const handlePickSource = useCallback(async () => {
+    const result = await window.electron.pickDirectory();
+    if (result) {
+      setSource(result);
+    }
+  }, [setSource]);
+
+  const handlePickDestination = useCallback(async () => {
+    const result = await window.electron.pickDirectory();
+    if (result) {
+      setDestination(result);
+    }
+  }, [setDestination]);
+
   const handleAddJob = () => {
     const newJobConfigs = new RsyncJobConfigs(source, destination, '');
     addJob(newJobConfigs);
@@ -25,18 +39,10 @@ function App() {
   return (
     <div>
       <h1>Rsync GUI</h1>
-      <input
-        type="text"
-        placeholder="Source"
-        value={source}
-        onChange={(e) => setSource(e.target.value)}
-      />
-      <input
-        type="text"
-        placeholder="Destination"
-        value={destination}
-        onChange={(e) => setDestination(e.target.value)}
-      />
+      <button onClick={handlePickSource}>Pick Source</button>
+      <span>{source}</span>
+      <button onClick={handlePickDestination}>Pick Destination</button>
+      <span>{destination}</span>
       <button onClick={handleAddJob}>Add Job</button>
       <ul>
         {jobs.map((job) => (

@@ -26,6 +26,9 @@ const electronHandler = {
   runRsync: async (rsyncJobConfigs: RsyncJobConfigs) => {
     return ipcRenderer.invoke('run-rsync', rsyncJobConfigs);
   },
+  pickDirectory: async (): Promise<string | null> => {
+    return ipcRenderer.invoke('pick-directory');
+  },
 };
 
 contextBridge.exposeInMainWorld('electron', electronHandler);
