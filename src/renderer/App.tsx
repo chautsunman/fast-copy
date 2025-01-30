@@ -1,50 +1,46 @@
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import icon from '../../assets/icon.svg';
+import React, { useContext, useState } from 'react';
+import { AppContext } from '../app/AppContext';
 import './App.css';
+import { RsyncJobConfigs } from '../types/RsyncJobConfigs';
 
-function Hello() {
+function App() {
+  const { jobs, addJob, removeJob } = useContext(AppContext);
+  const [source, setSource] = useState('');
+  const [destination, setDestination] = useState('');
+
+  const handleAddJob = () => {
+    const newJobConfigs = new RsyncJobConfigs(source, destination, '');
+    addJob(newJobConfigs);
+    setSource('');
+    setDestination('');
+  };
+
   return (
     <div>
-      <div className="Hello">
-        <img width="200" alt="icon" src={icon} />
-      </div>
-      <h1>electron-react-boilerplate</h1>
-      <div className="Hello">
-        <a
-          href="https://electron-react-boilerplate.js.org/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              📚
-            </span>
-            Read our docs
-          </button>
-        </a>
-        <a
-          href="https://github.com/sponsors/electron-react-boilerplate"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="folded hands">
-              🙏
-            </span>
-            Donate
-          </button>
-        </a>
-      </div>
+      <h1>Rsync GUI</h1>
+      <input
+        type="text"
+        placeholder="Source"
+        value={source}
+        onChange={(e) => setSource(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="Destination"
+        value={destination}
+        onChange={(e) => setDestination(e.target.value)}
+      />
+      <button onClick={handleAddJob}>Add Job</button>
+      <ul>
+        {jobs.map((job) => (
+          <li key={job.id}>
+            {job.rsyncJobConfigs.source} - {job.rsyncJobConfigs.destination}
+            <button onClick={() => removeJob(job.id)}>Remove</button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
 
-export default function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Hello />} />
-      </Routes>
-    </Router>
-  );
-}
+export default App;
