@@ -14,6 +14,8 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import { RsyncJobConfigs } from '../types/RsyncJobConfigs';
+import RsyncHandler from '../app/RsyncHandler';
 
 class AppUpdater {
   constructor() {
@@ -124,8 +126,18 @@ app.on('window-all-closed', () => {
   }
 });
 
+const rsyncHandler = new RsyncHandler();
+
 app
   .whenReady()
+  .then(() => {
+    ipcMain.handle(
+      'run-rsync',
+      async (event, rsyncJobConfigs: RsyncJobConfigs) => {
+        rsyncHandler.runJob(rsyncJobConfigs);
+      },
+    );
+  })
   .then(() => {
     createWindow();
     app.on('activate', () => {

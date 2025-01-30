@@ -23,13 +23,25 @@ const AppProvider = ({ children }: { children: ReactNode }) => {
     [setJobs],
   );
 
+  const runJob = useCallback(
+    async (id: number) => {
+      const job = jobs.find((job) => job.id === id);
+      if (job) {
+        const result = await window.electron.runRsync(job.rsyncJobConfigs);
+        console.log(result);
+      }
+    },
+    [jobs],
+  );
+
   const contextValue = useMemo(
     () => ({
       jobs,
       addJob,
       removeJob,
+      runJob,
     }),
-    [jobs, addJob, removeJob],
+    [jobs, addJob, removeJob, runJob],
   );
 
   return (

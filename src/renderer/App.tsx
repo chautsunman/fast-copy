@@ -1,10 +1,10 @@
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { AppContext } from '../app/AppContext';
 import './App.css';
 import { RsyncJobConfigs } from '../types/RsyncJobConfigs';
 
 function App() {
-  const { jobs, addJob, removeJob } = useContext(AppContext);
+  const { jobs, addJob, removeJob, runJob } = useContext(AppContext);
   const [source, setSource] = useState('');
   const [destination, setDestination] = useState('');
 
@@ -14,6 +14,13 @@ function App() {
     setSource('');
     setDestination('');
   };
+
+  const handleRunJob = useCallback(
+    async (id: number) => {
+      runJob(id);
+    },
+    [runJob],
+  );
 
   return (
     <div>
@@ -35,6 +42,7 @@ function App() {
         {jobs.map((job) => (
           <li key={job.id}>
             {job.rsyncJobConfigs.source} - {job.rsyncJobConfigs.destination}
+            <button onClick={() => handleRunJob(job.id)}>Run</button>
             <button onClick={() => removeJob(job.id)}>Remove</button>
           </li>
         ))}

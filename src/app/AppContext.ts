@@ -6,6 +6,7 @@ interface AppContextProps {
   jobs: RsyncJob[];
   addJob: (job: RsyncJobConfigs) => void;
   removeJob: (id: number) => void;
+  runJob: (id: number) => void;
 }
 
 const AppContext = createContext<AppContextProps>({} as AppContextProps);
