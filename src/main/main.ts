@@ -12,10 +12,13 @@ import path from 'path';
 import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import Store from 'electron-store';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import { RsyncJobConfigs } from '../types/RsyncJobConfigs';
 import RsyncHandler from '../app/RsyncHandler';
+import { initialUserStoreData, UserStoreData } from '../app/UserStoreData';
+import { RsyncJob } from '../types/RsyncJob';
 
 class AppUpdater {
   constructor() {
@@ -126,6 +129,9 @@ app.on('window-all-closed', () => {
   }
 });
 
+const store = new Store<UserStoreData>({
+  defaults: initialUserStoreData,
+});
 const rsyncHandler = new RsyncHandler();
 
 app
@@ -147,6 +153,13 @@ app
       } else {
         return result.filePaths[0];
       }
+    });
+
+    ipcMain.handle('getSavedJobs', (): RsyncJob[] => {
+      return store.get('savedJobs', []);
+    });
+    ipcMain.handle('setSavedJobs', (event, savedJobs: RsyncJob[]) => {
+      store.set('savedJobs', savedJobs);
     });
   })
   .then(() => {

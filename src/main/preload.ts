@@ -2,6 +2,7 @@
 /* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 import { RsyncJobConfigs } from '../types/RsyncJobConfigs';
+import { RsyncJob } from '../types/RsyncJob';
 
 export type Channels = 'ipc-example';
 
@@ -28,6 +29,12 @@ const electronHandler = {
   },
   pickDirectory: async (): Promise<string | null> => {
     return ipcRenderer.invoke('pick-directory');
+  },
+  getSavedJobs: (): Promise<RsyncJob[]> => {
+    return ipcRenderer.invoke('getSavedJobs');
+  },
+  setSavedJobs: (rsyncJobs: RsyncJob[]) => {
+    return ipcRenderer.invoke('setSavedJobs', rsyncJobs);
   },
 };
 
